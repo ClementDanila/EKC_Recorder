@@ -1,0 +1,12 @@
+local=false
+localDirectory=local-work
+file_past=past.csv
+file_ongoing=ongoing.csv
+file_future=future.csv
+username=your-username
+host=ftp.example.com
+port=21
+password=your-password
+
+
+

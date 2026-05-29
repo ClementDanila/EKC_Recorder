@@ -1,0 +1,83 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="teamFights">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="teamFight" maxOccurs="unbounded" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element type="xs:string" name="EventCode"/>
+                            <xs:element type="xs:int" name="FightID"/>
+                            <xs:element type="xs:string" name="Shiaijo"/>
+                            <xs:element type="xs:int" name="Pool" minOccurs="0"/>
+                            <xs:element type="xs:int" name="Fight"/>
+                            <xs:element type="xs:string" name="SortOrder"/>
+                            <xs:element type="xs:int" name="TeamIDR"/>
+                            <xs:element type="xs:string" name="TeamR"/>
+                            <xs:element type="xs:int" name="WinsR"/>
+                            <xs:element type="xs:int" name="SetR"/>
+                            <xs:element type="xs:string" name="CountryR"/>
+                            <xs:element type="xs:int" name="Hikiwake"/>
+                            <xs:element type="xs:int" name="Encho"/>
+                            <xs:element type="xs:string" name="CountryW"/>
+                            <xs:element type="xs:int" name="SetW"/>
+                            <xs:element type="xs:int" name="WinsW"/>
+                            <xs:element type="xs:string" name="TeamW"/>
+                            <xs:element type="xs:int" name="TeamIDW"/>
+                            <xs:element type="xs:string" name="Winner" minOccurs="0"/>
+                            <xs:element type="xs:string" name="FightOrder"/>
+                            <xs:element type="xs:string" name="Description"/>
+                            <xs:element type="xs:string" name="DescriptionShort"/>
+                            <xs:element type="xs:int" name="Status"/>
+                            <xs:element type="xs:int" name="StatusIndividual"/>
+                            <xs:element type="xs:string" name="FinishedAt"/>
+                            <xs:element type="xs:string" name="LastChanged"/>
+                            <xs:element name="childFights">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="childFight" maxOccurs="unbounded" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element type="xs:string" name="EventCode"/>
+                                                    <xs:element type="xs:int" name="FightID"/>
+                                                    <xs:element type="xs:string" name="Shiaijo"/>
+                                                    <xs:element type="xs:int" name="Pool" minOccurs="0"/>
+                                                    <xs:element type="xs:int" name="Fight"/>
+                                                    <xs:element type="xs:int" name="FightNumber"/>
+                                                    <xs:element type="xs:string" name="SortOrder"/>
+                                                    <xs:element type="xs:int" name="FighterIDR"/>
+                                                    <xs:element type="xs:string" name="CountryR" minOccurs="0"/>
+                                                    <xs:element type="xs:string" name="TareNumberR" minOccurs="0"/>
+                                                    <xs:element type="xs:string" name="FighterR" minOccurs="0"/>
+                                                    <xs:element type="xs:string" name="IpponR1" minOccurs="0"/>
+                                                    <xs:element type="xs:string" name="IpponR2" minOccurs="0"/>
+                                                    <xs:element type="xs:int" name="HansokuR" minOccurs="0"/>
+                                                    <xs:element type="xs:int" name="Hikiwake"/>
+                                                    <xs:element type="xs:int" name="Encho"/>
+                                                    <xs:element type="xs:int" name="HansokuW" minOccurs="0"/>
+                                                    <xs:element type="xs:string" name="IpponW2" minOccurs="0"/>
+                                                    <xs:element type="xs:string" name="IpponW1" minOccurs="0"/>
+                                                    <xs:element type="xs:string" name="FighterW" minOccurs="0"/>
+                                                    <xs:element type="xs:string" name="TareNumberW" minOccurs="0"/>
+                                                    <xs:element type="xs:string" name="CountryW" minOccurs="0"/>
+                                                    <xs:element type="xs:int" name="FighterIDW"/>
+                                                    <xs:element type="xs:string" name="Winner" minOccurs="0"/>
+                                                    <xs:element type="xs:int" name="FightOrder"/>
+                                                    <xs:element type="xs:string" name="Description"/>
+                                                    <xs:element type="xs:string" name="DescriptionShort"/>
+                                                    <xs:element type="xs:int" name="Status"/>
+                                                    <xs:element type="xs:int" name="StatusIndividual"/>
+                                                    <xs:element type="xs:string" name="FinishedAt"/>
+                                                    <xs:element type="xs:string" name="LastChanged"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
