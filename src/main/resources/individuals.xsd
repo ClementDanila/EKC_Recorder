@@ -5,34 +5,35 @@
                 <xs:element name="indFight" maxOccurs="unbounded" minOccurs="0">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element type="xs:string" name="EventCode"/>
-                            <xs:element type="xs:int" name="FightID"/>
-                            <xs:element type="xs:string" name="Shiaijo"/>
+                            <xs:element type="xs:string" name="EventCode" minOccurs="0"/>
+                            <xs:element type="xs:int" name="FightID" minOccurs="0"/>
+                            <xs:element type="xs:string" name="Shiaijo" minOccurs="0"/>
                             <xs:element type="xs:int" name="Pool" minOccurs="0"/>
-                            <xs:element type="xs:int" name="Fight"/>
-                            <xs:element type="xs:string" name="SortOrder"/>
-                            <xs:element type="xs:int" name="FighterIDR"/>
-                            <xs:element type="xs:string" name="CountryR"/>
-                            <xs:element type="xs:string" name="TareNumberR"/>
-                            <xs:element type="xs:string" name="FighterR"/>
+                            <xs:element type="xs:int" name="Fight" minOccurs="0"/>
+                            <xs:element type="xs:string" name="SortOrder" minOccurs="0"/>
+                            <xs:element type="xs:int" name="FighterIDR" minOccurs="0"/>
+                            <xs:element type="xs:string" name="CountryR" minOccurs="0"/>
+                            <xs:element type="xs:string" name="TareNumberR" minOccurs="0"/>
+                            <xs:element type="xs:string" name="FighterR" minOccurs="0"/>
                             <xs:element type="xs:string" name="IpponR1" minOccurs="0"/>
                             <xs:element type="xs:string" name="IpponR2" minOccurs="0"/>
                             <xs:element type="xs:int" name="HansokuR" minOccurs="0"/>
-                            <xs:element type="xs:int" name="Hikiwake"/>
-                            <xs:element type="xs:int" name="Encho"/>
+                            <xs:element type="xs:int" name="Hikiwake" minOccurs="0"/>
+                            <xs:element type="xs:int" name="Encho" minOccurs="0"/>
                             <xs:element type="xs:int" name="HansokuW" minOccurs="0"/>
                             <xs:element type="xs:string" name="IpponW2" minOccurs="0"/>
                             <xs:element type="xs:string" name="IpponW1" minOccurs="0"/>
-                            <xs:element type="xs:string" name="FighterW"/>
-                            <xs:element type="xs:string" name="TareNumberW"/>
-                            <xs:element type="xs:string" name="CountryW"/>
-                            <xs:element type="xs:int" name="FighterIDW"/>
-                            <xs:element type="xs:int" name="FightOrder"/>
-                            <xs:element type="xs:string" name="Description"/>
-                            <xs:element type="xs:string" name="DescriptionShort"/>
-                            <xs:element type="xs:int" name="Status"/>
-                            <xs:element type="xs:string" name="Winner"/>
-                            <xs:element type="xs:string" name="FinishedAt"/>
+                            <xs:element type="xs:string" name="FighterW" minOccurs="0"/>
+                            <xs:element type="xs:string" name="TareNumberW" minOccurs="0"/>
+                            <xs:element type="xs:string" name="CountryW" minOccurs="0"/>
+                            <xs:element type="xs:int" name="FighterIDW" minOccurs="0"/>
+                            <xs:element type="xs:int" name="FightOrder" minOccurs="0"/>
+                            <xs:element type="xs:string" name="Description" minOccurs="0"/>
+                            <xs:element type="xs:string" name="DescriptionShort" minOccurs="0"/>
+                            <xs:element type="xs:int" name="Status" minOccurs="0"/>
+                            <xs:element type="xs:string" name="Winner" minOccurs="0"/>
+                            <xs:element type="xs:string" name="LastChanged" minOccurs="0"/>
+                            <xs:element type="xs:string" name="FinishedAt" minOccurs="0"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
