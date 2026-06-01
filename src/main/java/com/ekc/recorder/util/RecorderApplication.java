@@ -17,27 +17,54 @@ public final class RecorderApplication {
 
     public void run(RecorderConfig config) throws IOException {
         Files.createDirectories(config.localDirectory());
+        ensureChangesFile(config);
 
-        if (config.localMode()) {
-            System.out.printf("Mode local activé : dossier '%s'.%n", config.localDirectory().toAbsolutePath());
-            validateLocalFiles(config);
-            if (config.validateXml()) {
-                validateXmlFiles(config);
-            }
-            waitForEnter();
-            return;
-        }
-
-        FTPClient ftpClient = new FTPClient();
-        try {
+        FTPClient ftpClient = null;
+        if (!config.localMode()) {
+            ftpClient = new FTPClient();
             connect(ftpClient, config);
             copyFilesFromFtp(ftpClient, config);
-            if (config.validateXml()) {
-                validateXmlFiles(config);
+        } else {
+            System.out.printf("Mode local activé : dossier '%s'.%n", config.localDirectory().toAbsolutePath());
+            validateLocalFiles(config);
+        }
+
+        if (config.validateXml()) {
+            validateXmlFiles(config);
+        }
+
+        ChangeMonitor monitor = new ChangeMonitor(config, ftpClient);
+        Thread monitoringThread = new Thread(() -> {
+            try {
+                monitor.run();
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
             }
+        }, "xml-change-monitor");
+        monitoringThread.setDaemon(true);
+        monitoringThread.start();
+
+        try {
             waitForEnter();
         } finally {
+            monitor.stop();
+            monitoringThread.interrupt();
+            try {
+                monitoringThread.join(5_000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
             disconnectQuietly(ftpClient);
+        }
+    }
+
+    private void ensureChangesFile(RecorderConfig config) throws IOException {
+        Path changesFile = config.changesFile();
+        if (changesFile != null) {
+            Path parent = changesFile.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
         }
     }
 

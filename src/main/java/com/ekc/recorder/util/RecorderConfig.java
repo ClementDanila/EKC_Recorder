@@ -10,6 +10,8 @@ public record RecorderConfig(
         String fileFuture,
         RecorderCategory category,
         boolean validateXml,
+        long checkIntervalMs,
+        Path changesFile,
         String username,
         String host,
         int port,

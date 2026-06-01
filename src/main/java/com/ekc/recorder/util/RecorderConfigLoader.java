@@ -29,9 +29,12 @@ public final class RecorderConfigLoader {
         String fileFuture = required(properties, "file_future");
         RecorderCategory category = RecorderCategory.fromProperty(required(properties, "category"));
         boolean validateXml = Boolean.parseBoolean(properties.getProperty("validate_xml", "true").trim());
+        long checkIntervalMs = parsePositiveLong(properties.getProperty("check_interval_ms", "60000"), "check_interval_ms");
+        Path changesFile = resolveChangesFile(properties.getProperty("changes_file"), localDirectory);
 
         if (localMode) {
-            return new RecorderConfig(true, localDirectory, filePast, fileOngoing, fileFuture, category, validateXml, "", "", 0, "");
+            return new RecorderConfig(true, localDirectory, filePast, fileOngoing, fileFuture, category, validateXml,
+                    checkIntervalMs, changesFile, "", "", 0, "");
         }
 
         String username = required(properties, "username");
@@ -50,7 +53,28 @@ public final class RecorderConfigLoader {
             throw new IOException("La propriété 'port' doit être comprise entre 1 et 65535 : " + port);
         }
 
-        return new RecorderConfig(false, localDirectory, filePast, fileOngoing, fileFuture, category, validateXml, username, host, port, password);
+        return new RecorderConfig(false, localDirectory, filePast, fileOngoing, fileFuture, category, validateXml,
+                checkIntervalMs, changesFile, username, host, port, password);
+    }
+
+    private static Path resolveChangesFile(String rawValue, Path localDirectory) {
+        if (rawValue == null || rawValue.isBlank()) {
+            return localDirectory.resolve("changes.json");
+        }
+
+        return Path.of(rawValue.trim());
+    }
+
+    private static long parsePositiveLong(String value, String key) throws IOException {
+        try {
+            long parsed = Long.parseLong(value.trim());
+            if (parsed <= 0) {
+                throw new IOException("La propriété '" + key + "' doit être strictement positive : " + value);
+            }
+            return parsed;
+        } catch (NumberFormatException e) {
+            throw new IOException("La propriété '" + key + "' doit être un entier valide : " + value, e);
+        }
     }
 
     private static String required(Properties properties, String key) throws IOException {

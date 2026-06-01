@@ -2,6 +2,7 @@ package com.ekc.recorder.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -11,7 +12,11 @@ import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -33,12 +38,7 @@ public final class XmlFileValidator {
     }
 
     public void validate(Path xmlFile) throws IOException {
-        if (!Files.exists(xmlFile)) {
-            throw new IOException("Fichier XML introuvable : " + xmlFile.toAbsolutePath());
-        }
-
         Document document = loadDocument(xmlFile);
-        normalize(document.getDocumentElement());
 
         Validator validator = schema.newValidator();
         try {
@@ -50,18 +50,46 @@ public final class XmlFileValidator {
         System.out.printf("Fichier XML valide (%s) : %s%n", category.name().toLowerCase(java.util.Locale.ROOT), xmlFile.toAbsolutePath());
     }
 
+    public String canonicalContent(Path xmlFile) throws IOException {
+        Document document = loadDocument(xmlFile);
+        return serialize(document);
+    }
+
     private Document loadDocument(Path xmlFile) throws IOException {
-        try {
+        if (!Files.exists(xmlFile)) {
+            throw new IOException("Fichier XML introuvable : " + xmlFile.toAbsolutePath());
+        }
+
+        try (InputStream inputStream = Files.newInputStream(xmlFile)) {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             factory.setExpandEntityReferences(false);
-            return factory.newDocumentBuilder().parse(Files.newInputStream(xmlFile));
+            Document document = factory.newDocumentBuilder().parse(inputStream);
+            normalize(document.getDocumentElement());
+            return document;
         } catch (Exception e) {
             if (e instanceof IOException ioException) {
                 throw ioException;
             }
             throw new IOException("Impossible de lire le fichier XML : " + xmlFile.toAbsolutePath(), e);
+        }
+    }
+
+    private String serialize(Document document) throws IOException {
+        try {
+            TransformerFactory factory = TransformerFactory.newInstance();
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            Transformer transformer = factory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty(OutputKeys.INDENT, "no");
+
+            StringWriter writer = new StringWriter();
+            transformer.transform(new DOMSource(document), new StreamResult(writer));
+            return writer.toString();
+        } catch (Exception e) {
+            throw new IOException("Impossible de sérialiser le fichier XML canonique.", e);
         }
     }
 
