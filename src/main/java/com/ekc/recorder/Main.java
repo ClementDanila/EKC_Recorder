@@ -1,6 +1,7 @@
 package com.ekc.recorder;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -18,9 +19,10 @@ public final class Main {
 
     public static void main(String[] args) {
         Path configPath = resolveConfigPath(args);
+        Instant launchTimestamp = Instant.now();
 
         try {
-            RecorderConfig config = RecorderConfigLoader.load(configPath);
+            RecorderConfig config = RecorderConfigLoader.load(configPath, launchTimestamp);
             new RecorderApplication().run(config);
         } catch (IOException | RuntimeException e) {
             System.err.printf("Impossible de démarrer l'application : %s%n", e.getMessage());

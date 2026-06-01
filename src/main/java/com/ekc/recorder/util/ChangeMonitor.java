@@ -29,6 +29,10 @@ public final class ChangeMonitor {
 
     public void run() throws IOException, InterruptedException {
         Map<String, String> previousSnapshots = captureCurrentSnapshots();
+        for (TrackedFile trackedFile : trackedFiles()) {
+            changeLog.add(trackedFile.reference(), List.of(new XmlChange("/", XmlChangeType.INITIAL, "",
+                    previousSnapshots.get(trackedFile.reference()))));
+        }
         writer.write(config.changesFile(), changeLog.records());
 
         while (running.get()) {

@@ -22,6 +22,8 @@ java -jar target/ekc-recorder-1.0.0-SNAPSHOT.jar ftp.properties
 
 Le programme lit les propriétés externes `file_past`, `file_ongoing`, `file_future` et `category`, ainsi que les paramètres FTP ou locaux selon le mode choisi, puis attend un appui sur la touche Entrée pour se terminer.
 
+Le fichier de journal des changements est désormais nommé automatiquement à chaque lancement avec la forme `categorie_timestamp.json` (par exemple `individual_20260601-142530-123.json`). La propriété `changes_file` sert de point d’ancrage pour le dossier de sortie.
+
 Quand `local=false` (ou absent), les propriétés FTP sont utilisées. Quand `local=true`, `localDirectory` remplace le serveur FTP comme dossier de travail.
 
 En mode FTP, les trois fichiers sont d'abord vérifiés sur le serveur puis copiés dans `localDirectory`.

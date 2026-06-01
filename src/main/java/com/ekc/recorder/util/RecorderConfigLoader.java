@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Properties;
 
 public final class RecorderConfigLoader {
@@ -13,6 +17,10 @@ public final class RecorderConfigLoader {
     }
 
     public static RecorderConfig load(Path configPath) throws IOException {
+        return load(configPath, Instant.now());
+    }
+
+    public static RecorderConfig load(Path configPath, Instant launchTimestamp) throws IOException {
         if (!Files.exists(configPath)) {
             throw new IOException("Fichier de propriétés introuvable : " + configPath.toAbsolutePath());
         }
@@ -29,8 +37,9 @@ public final class RecorderConfigLoader {
         String fileFuture = required(properties, "file_future");
         RecorderCategory category = RecorderCategory.fromProperty(required(properties, "category"));
         boolean validateXml = Boolean.parseBoolean(properties.getProperty("validate_xml", "true").trim());
-        long checkIntervalMs = parsePositiveLong(properties.getProperty("check_interval_ms", "60000"), "check_interval_ms");
-        Path changesFile = resolveChangesFile(properties.getProperty("changes_file"), localDirectory);
+        long checkIntervalMs = parsePositiveLong(properties.getProperty("check_interval_ms", "60000"));
+        Path changesFile = resolveChangesFile(properties.getProperty("changes_file"), localDirectory, category,
+                launchTimestamp);
 
         if (localMode) {
             return new RecorderConfig(true, localDirectory, filePast, fileOngoing, fileFuture, category, validateXml,
@@ -57,23 +66,38 @@ public final class RecorderConfigLoader {
                 checkIntervalMs, changesFile, username, host, port, password);
     }
 
-    private static Path resolveChangesFile(String rawValue, Path localDirectory) {
+    private static Path resolveChangesFile(String rawValue, Path localDirectory, RecorderCategory category,
+            Instant launchTimestamp) {
+        Path baseDirectory = localDirectory;
         if (rawValue == null || rawValue.isBlank()) {
-            return localDirectory.resolve("changes.json");
+            return baseDirectory.resolve(buildChangesFileName(category, launchTimestamp));
         }
 
-        return Path.of(rawValue.trim());
+        Path configuredPath = Path.of(rawValue.trim());
+        Path parent = configuredPath.getParent();
+        if (parent != null) {
+            baseDirectory = parent;
+        }
+
+        return baseDirectory.resolve(buildChangesFileName(category, launchTimestamp));
     }
 
-    private static long parsePositiveLong(String value, String key) throws IOException {
+    private static String buildChangesFileName(RecorderCategory category, Instant launchTimestamp) {
+        String timestamp = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss-SSS", Locale.ROOT)
+                .withZone(ZoneOffset.UTC)
+                .format(launchTimestamp);
+        return category.name().toLowerCase(Locale.ROOT) + "_" + timestamp + ".json";
+    }
+
+    private static long parsePositiveLong(String value) throws IOException {
         try {
             long parsed = Long.parseLong(value.trim());
             if (parsed <= 0) {
-                throw new IOException("La propriété '" + key + "' doit être strictement positive : " + value);
+                throw new IOException("La propriété 'check_interval_ms' doit être strictement positive : " + value);
             }
             return parsed;
         } catch (NumberFormatException e) {
-            throw new IOException("La propriété '" + key + "' doit être un entier valide : " + value, e);
+            throw new IOException("La propriété 'check_interval_ms' doit être un entier valide : " + value, e);
         }
     }
 
