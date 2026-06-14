@@ -45,11 +45,15 @@ public final class ChangeMonitor {
             if (!config.localMode()) {
                 refreshFromFtp();
             }
-
-            Map<String, String> currentSnapshots = captureCurrentSnapshots();
-            detectAndStoreChanges(previousSnapshots, currentSnapshots);
-            previousSnapshots = currentSnapshots;
-            writer.write(config.changesFile(), changeLog.records());
+            try {
+                Map<String, String> currentSnapshots = captureCurrentSnapshots();
+                detectAndStoreChanges(previousSnapshots, currentSnapshots);
+                previousSnapshots = currentSnapshots;
+                writer.write(config.changesFile(), changeLog.records());
+            } catch (Exception e) {
+                System.err.printf("Erreur lors de la détection des changements : %s%n", e.getMessage());
+                e.printStackTrace(System.err);
+            }
         }
     }
 
